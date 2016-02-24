@@ -1,0 +1,62 @@
+---
+
+- name: Git, check version
+  shell: >
+    which git && git --version | grep -o '\([0-9\.]*\)'
+  failed_when: false
+  register: git_version_ok
+  changed_when: git_version_ok.rc!=0 or git_version_ok.stdout_lines[1] | version_compare(git_version, '<')
+
+- name: GIT, remove rpm
+  yum: pkg=git state=absent
+  ignore_errors: true
+  when: git_version_ok|changed
+
+- name: GIT, dependencies for git are installed
+  yum: "pkg={{ item }} state=installed"
+  with_items:
+    - gettext-devel
+    - expat-devel
+    - curl-devel
+    - zlib-devel
+    - perl-devel
+    - openssl-devel
+    - gcc-c++
+    - make
+  when: git_version_ok|changed
+
+- name: Git, build directory
+  file: path={{ git_build_directory }}
+        state=directory
+  when: git_version_ok|changed
+
+- name: Git, download from kernel.org repo
+  get_url:
+    url: "https://www.kernel.org/pub/software/scm/git/git-{{ git_version }}.tar.gz"
+    dest: "{{ git_build_directory }}/git-{{ git_version }}.tar.gz"
+  when: git_version_ok|changed
+
+- name: Git, unarchive
+  unarchive:
+    src="{{ git_build_directory }}/git-{{ git_version }}.tar.gz"
+    dest="{{ git_build_directory }}/"
+    copy=no
+  when: git_version_ok|changed
+
+- name: Git, build and install.
+  command: >
+    make prefix={{ git_install_path }} {{ item }}
+    chdir={{ git_build_directory }}/git-{{ git_version }}
+  when: git_version_ok|changed
+  with_items:
+    - all
+    - install
+  sudo: yes
+  register: git_installed
+
+- name: Git, cleanup install
+  command: >
+    rm -rf {{ git_build_directory }}
+  when: git_installed|changed and not git_installed|failed
+  ignore_errors: true
+  sudo: yes

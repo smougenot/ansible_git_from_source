@@ -1,0 +1,9 @@
+---
+# where the source will be downloaded
+git_build_directory: /tmp/git-sources
+
+# prefix path for make
+git_install_path: "/usr"
+
+# git version desired
+git_version: "1.8.5.6"

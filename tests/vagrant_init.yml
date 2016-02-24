@@ -1,0 +1,19 @@
+- hosts: all
+
+  sudo: yes
+
+  tasks:
+    - name: Ensure packages are installed (RedHat).
+      yum: 'name="{{ item }}" state=present'
+      with_items:
+        - ansible
+#        - epel-release
+#        - bash-completion
+      when: ansible_os_family == 'RedHat'
+
+    - name: Ensure packages are installed (Debian).
+      apt: 'name="{{ item }}" state=installed'
+      with_items:
+        - ansible
+#        - bash-completion
+      when: ansible_os_family == 'Debian'
