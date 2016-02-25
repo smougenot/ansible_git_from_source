@@ -9,3 +9,15 @@ Role Variables
 --------------
 
 * git_version : the version you want (ex: 1.8.5.6, 2.0.4) 
+
+
+License
+-------
+
+CC-BY
+
+Author Information
+------------------
+
+https://github.com/smougenot
+@sylvainMougenot
