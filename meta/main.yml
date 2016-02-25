@@ -2,7 +2,7 @@
 galaxy_info:
   author: Sylvain Mougenot
   description: Deploy git client from source (let you choose the version, require build tools)
-  company: your company (optional)
+#  company: your company (optional)
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker

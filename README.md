@@ -8,7 +8,7 @@ Role Git
 Install git from sources downloaded from https://www.kernel.org/pub/software/scm/git
 
 Available on Ansible Galaxy
-https://galaxy.ansible.com/smougenot/git_from_source/
+https://galaxy.ansible.com/smougenot/git/
 
 Role Variables
 --------------
@@ -25,4 +25,5 @@ Author Information
 ------------------
 
 https://github.com/smougenot
+
 @sylvainMougenot
