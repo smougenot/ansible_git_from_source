@@ -132,10 +132,10 @@ galaxy_info:
   #  - squeeze
   #  - wheezy
   #
-  # Below are all categories currently available. Just as with
+  # Below are all tags currently available. Just as with
   # the platforms above, uncomment those that apply to your role.
   #
-  categories:
+  galaxy_tags:
   - development
   - system
 dependencies: []
