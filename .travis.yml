@@ -12,7 +12,7 @@ install:
   - pip install ansible
 
 script:
-  - ansible-playbook tests/test.yml --syntax-check
+  - ansible-playbook test.yml --syntax-check
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
