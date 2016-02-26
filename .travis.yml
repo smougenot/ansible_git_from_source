@@ -35,7 +35,7 @@ script:
   # start container
   - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
   # prepare inventory file
-  - echo -e "localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }')" > tests/inventory
+  - "echo -e localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }') > tests/inventory"
   # run playbook
   - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
   # destroy container
