@@ -4,15 +4,42 @@ sudo: required
 language: python
 python: "2.7"
 
+env:
+  - distro: centos
+    version: 6
+
+services:
+  - docker
+
 before_install:
   # - sudo apt-get update
 
 install:
   # Install Ansible.
   - pip install ansible
+  # generate ssh key (will be used to ssh into the docker container)
+  - ssh-keygen -q -t rsa -N "" -f tests/provisionner
+  # Pull from image
+  - sudo docker pull ${distro}:${version}
+  # Build image
+  - sudo docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests'
 
 script:
+  # first check if the code is understood by ansible
   - ansible-playbook test.yml --syntax-check
+
+  #
+  # run playbook on container
+  #
+
+  # start container
+  - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
+  # prepare inventory file
+  - echo -e "localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }')" > tests/inventory
+  # run playbook
+  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
+  # destroy container
+  - docker rm -f ansible_test
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
