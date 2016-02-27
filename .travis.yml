@@ -42,9 +42,9 @@ script:
   - "echo -e localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }') > tests/inventory"
   - cat tests/inventory
   # run playbook
-  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
+#  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
   - docker ps -a
-  - docker logs
+  - docker logs ansible_test
   # destroy container
   - docker rm -f ansible_test
 
