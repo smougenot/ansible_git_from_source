@@ -19,6 +19,8 @@ install:
   - pip install ansible
   # generate ssh key (will be used to ssh into the docker container)
   - ssh-keygen -q -t rsa -N "" -f tests/provisionner
+  - chmod 700 tests/provisionner
+  - ls -l tests
   # Pull from image
   - docker pull ${distro}:${version}
   # Build image
