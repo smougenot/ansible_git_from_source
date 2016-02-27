@@ -20,9 +20,10 @@ install:
   # generate ssh key (will be used to ssh into the docker container)
   - ssh-keygen -q -t rsa -N "" -f tests/provisionner
   # Pull from image
-  - sudo docker pull ${distro}:${version}
+  - docker pull ${distro}:${version}
   # Build image
-  - sudo docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests
+  - docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests
+  - docker images
 
 script:
   # first check if the code is understood by ansible
@@ -34,10 +35,12 @@ script:
 
   # start container
   - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
+  - docker ps -a
   # prepare inventory file
   - "echo -e localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }') > tests/inventory"
+  - cat tests/inventory
   # run playbook
-  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
+  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
   # destroy container
   - docker rm -f ansible_test
 
