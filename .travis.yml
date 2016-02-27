@@ -22,7 +22,7 @@ install:
   # Pull from image
   - sudo docker pull ${distro}:${version}
   # Build image
-  - sudo docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests'
+  - sudo docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests
 
 script:
   # first check if the code is understood by ansible
