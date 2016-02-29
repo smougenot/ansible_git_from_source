@@ -39,10 +39,14 @@ script:
   - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
   - docker ps -a
   # prepare inventory file
-  - "echo -e localhost:$(docker port ansible_test 22 | awk -F: '{print $2 }') > tests/inventory"
+  - "export myContainerPort=$(docker port ansible_test 22 | awk -F: '{print $2 }')
+  - "echo -e localhost:$myContainerPort > tests/inventory"
   - cat tests/inventory
+  # wait for ssh access
+  - "source tests/utils.sh && wait4ssh $myContainerPort"
   # run playbook
-#  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
+  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i tests/inventory --user=provisionner --private-key=tests/provisionner test.yml
+  - docker exec ansible_test git --version | grep -c '1.8.5.6'
   - docker ps -a
   - docker logs ansible_test
   # destroy container

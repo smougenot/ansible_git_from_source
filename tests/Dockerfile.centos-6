@@ -18,8 +18,10 @@ RUN \
     chown -R provisionner:provisionner /home/provisionner/.ssh && \
     chmod 700 /home/provisionner/.ssh && \
     echo "provisionner ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+CMD ["/sbin/init"]
+
 COPY provisionner.pub /home/provisionner/.ssh/authorized_keys
 RUN chmod 500 /home/provisionner/.ssh/authorized_keys && \
     chown provisionner:provisionner /home/provisionner/.ssh/authorized_keys
 
-ENTRYPOINT ["/sbin/init"]
