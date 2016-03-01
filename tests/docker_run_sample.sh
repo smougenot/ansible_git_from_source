@@ -17,11 +17,11 @@ distro=centos
 version=6
 
 _info "Generating ssh key"
-rm -f provisionner provisionner.pub
-ssh-keygen -q -t rsa -N "" -f provisionner &&
+rm -f "$sshPk" "$sshPk.pub"
+ssh-keygen -q -t rsa -N "" -f "$sshPk" &&
   chmod 700 provisionner;
 checkForError "Ssh key generation failed"
-ls -l . | grep provisionner
+find . -name '*provisionner*'
 
 # Pull from image
 _info "Get parent image"
@@ -47,9 +47,9 @@ docker ps -a
 # prepare inventory file
 _info "Preparing inventory"
 _containerPort="$(docker port ansible_test 22 | awk -F: '{print $2 }')"
-echo -e "localhost:$_containerPort" > inventory
+echo -e "localhost:$_containerPort" > "$inventoryFile"
 checkForError "Inventory failed"
-cat inventory
+cat "$inventoryFile"
 
 _info "Ssh access check"
 wait4ssh "$_containerPort"
@@ -67,13 +67,13 @@ _success "Check code syntax OK"
 
 # test role
 _info "Test ansible code"
-ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ${dir}/inventory --user=provisionner --private-key=provisionner ${dir}/../test.yml
+ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i "$inventoryFile" --user=provisionner --private-key=provisionner ${dir}/../test.yml
 checkForError "Error running test playbook"
 _success "Test ansible code OK"
 
 # test role idempotence
 _info "Test code idempotence"
-playbook_output=$(ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i ${dir}/inventory --user=provisionner --private-key=provisionner ${dir}/../test.yml)
+playbook_output=$(ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i "$inventoryFile" --user=provisionner --private-key=provisionner ${dir}/../test.yml)
 checkForError "Error running idempotence test playbook"
 echo ${playbook_output} | grep -q 'changed=0.*failed=0' \
     && (_success  'Test code idempotence pass' && exit 0) \

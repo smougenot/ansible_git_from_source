@@ -3,6 +3,19 @@
 # find the directory containing this code
 dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
+# ssh private key
+sshPk="${dir}/provisionner"
+function checkPkExists {
+  if [ ! -r "$sshPk" ]; then
+    _error "Private key not found : $sshPk"
+    exit 1
+  fi
+}
+
+# Ansible inventory
+inventoryFile="${dir}/generated/inventory"
+
+export inventoryFile sshPk
 
 #
 # Utilities
@@ -54,10 +67,13 @@ function checkForError {
 
 # check ssh
 # $1 ssh port
+# $* options
 function sshCheck {
+  checkPkExists
   local port="$1"
+  shift
   _debug "Ssh access check"
-  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${dir}/provisionner -p "$port" provisionner@localhost <<EOFSSH
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i "${sshPk}" -p "$port" $* provisionner@localhost <<EOFSSH
   echo "It's alive"
 EOFSSH
   local ret=$?
@@ -83,6 +99,7 @@ function wait4ssh {
   done
   if [ ! ${ret} -eq 0 ]; then
     _error "No ssh access"
+    sshCheck "$port" -vvvv
     return 1
   fi
   return 0
