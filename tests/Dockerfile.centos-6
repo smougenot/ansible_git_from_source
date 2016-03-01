@@ -21,7 +21,7 @@ RUN \
 
 CMD ["/sbin/init"]
 
-COPY provisionner.pub /home/provisionner/.ssh/authorized_keys
+COPY generated/provisionner.pub /home/provisionner/.ssh/authorized_keys
 RUN chmod 500 /home/provisionner/.ssh/authorized_keys && \
     chown provisionner:provisionner /home/provisionner/.ssh/authorized_keys
 

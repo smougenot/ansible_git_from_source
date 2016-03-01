@@ -19,9 +19,9 @@ version=6
 _info "Generating ssh key"
 rm -f "$sshPk" "$sshPk.pub"
 ssh-keygen -q -t rsa -N "" -f "$sshPk" &&
-  chmod 700 provisionner;
+  chmod 700 "$sshPk";
 checkForError "Ssh key generation failed"
-find . -name '*provisionner*'
+find . -name '*provisionner*' -exec ls -la {} \;
 
 # Pull from image
 _info "Get parent image"

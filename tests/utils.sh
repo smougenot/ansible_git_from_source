@@ -4,13 +4,7 @@
 dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 # ssh private key
-sshPk="${dir}/provisionner"
-function checkPkExists {
-  if [ ! -r "$sshPk" ]; then
-    _error "Private key not found : $sshPk"
-    exit 1
-  fi
-}
+sshPk="${dir}/generated/provisionner"
 
 # Ansible inventory
 inventoryFile="${dir}/generated/inventory"
@@ -63,6 +57,14 @@ function checkForError {
       _error "$1"
       exit 1
   fi
+}
+
+function checkPkExists {
+  if [ ! -r "$sshPk" ]; then
+    _error "Private key not found : $sshPk"
+    exit 1
+  fi
+  _debug "Using pk : $sshPk \n $(ls -l $sshPk)"
 }
 
 # check ssh
