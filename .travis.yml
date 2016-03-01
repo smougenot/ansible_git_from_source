@@ -39,8 +39,8 @@ script:
   - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
   - docker ps -a
   # prepare inventory file
-  - "export myContainerPort=$(docker port ansible_test 22 | awk -F: '{print $2 }')
-  - "echo -e localhost:$myContainerPort > tests/inventory"
+  - "export myContainerPort=$(docker port ansible_test 22 | awk -F: '{print $2 }') "
+  - "echo -e localhost:$myContainerPort > tests/inventory "
   - cat tests/inventory
   # wait for ssh access
   - "source tests/utils.sh && wait4ssh $myContainerPort"
