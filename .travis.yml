@@ -17,16 +17,7 @@ before_install:
 install:
   # Install Ansible.
   - pip install ansible
-  - "source tests/utils.sh"
-  # generate ssh key (will be used to ssh into the docker container)
-  - ssh-keygen -q -t rsa -N "" -f $sshPk
-  - chmod 700 $sshPk
-  - ls -l tests
-  # Pull from image
-  - docker pull ${distro}:${version}
-  # Build image
-  - docker build --rm=true --file=tests/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test tests
-  - docker images
+  - sh tests/docker_prepare.sh
 
 script:
   # first check if the code is understood by ansible
@@ -36,20 +27,7 @@ script:
   # run playbook on container
   #
 
-  # start container
-  - docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
-  - docker ps -a
-  # prepare inventory file
-  - "source tests/utils.sh"
-  - "export myContainerPort=$(docker port ansible_test 22 | awk -F: '{print $2 }') "
-  - "echo -e localhost:$myContainerPort > $inventoryFile "
-  - cat tests/inventory
-  # wait for ssh access
-  - "wait4ssh $myContainerPort"
-  # run playbook
-  - ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -vvvv -i $inventoryFile --user=provisionner --private-key=$sshPk test.yml
-  - docker exec ansible_test git --version | grep -c '1.8.5.6'
-  - docker ps -a
+  - sh tests/docker_check.sh
   - docker logs ansible_test
   # destroy container
   - docker rm -f ansible_test

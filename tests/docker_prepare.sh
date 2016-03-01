@@ -13,8 +13,6 @@ source "$_utilities"
 #
 # build docker image
 #
-distro=centos
-version=6
 
 _info "Generating ssh key"
 rm -f "$sshPk" "$sshPk.pub"
@@ -54,27 +52,3 @@ cat "$inventoryFile"
 _info "Ssh access check"
 wait4ssh "$_containerPort"
 checkForError "Ssh access failed"
-
-#
-# testing role
-#
-
-# check code syntax
-_info "Check code syntax"
-ansible-playbook ${dir}/../test.yml --syntax-check
-checkForError "Code syntax check failed"
-_success "Check code syntax OK"
-
-# test role
-_info "Test ansible code"
-ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i "$inventoryFile" --user=provisionner --private-key=provisionner ${dir}/../test.yml
-checkForError "Error running test playbook"
-_success "Test ansible code OK"
-
-# test role idempotence
-_info "Test code idempotence"
-playbook_output=$(ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i "$inventoryFile" --user=provisionner --private-key=provisionner ${dir}/../test.yml)
-checkForError "Error running idempotence test playbook"
-echo ${playbook_output} | grep -q 'changed=0.*failed=0' \
-    && (_success  'Test code idempotence pass' && exit 0) \
-    || (_error 'Test code idempotence fail' && exit 1)
