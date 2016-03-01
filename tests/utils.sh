@@ -57,7 +57,7 @@ function checkForError {
 function sshCheck {
   local port="$1"
   _debug "Ssh access check"
-  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i provisionner -p "$port" provisionner@localhost <<EOFSSH
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${dir}/provisionner -p "$port" provisionner@localhost <<EOFSSH
   echo "It's alive"
 EOFSSH
   local ret=$?
