@@ -8,7 +8,7 @@ if [ ! -r "$_utilities" ]; then
   exit 1
 fi
 
-source "$_utilities"
+. "$_utilities"
 
 #
 # build docker image
