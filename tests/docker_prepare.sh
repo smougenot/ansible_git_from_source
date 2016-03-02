@@ -27,7 +27,7 @@ docker pull ${distro}:${version}
 
 # Build image
 _info "Build image"
-docker build --rm=true --file=${dir}/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test .
+docker build --rm=true --file=${dir}/Dockerfile.${distro}-${version} --tag=${distro}-${version}:ansible_test ${dir}
 checkForError "Build image failed"
 docker images
 _success "Docker image ready"
