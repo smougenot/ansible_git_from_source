@@ -8,9 +8,9 @@ env:
   - distro: centos
     version: 6
     extra_args: ''
-  - distro: centos
-    version: 7
-    extra_args: ' --privileged  -v /sys/fs/cgroup:/sys/fs/cgroup:ro '
+#  - distro: centos
+#    version: 7
+#    extra_args: ' --privileged  -v /sys/fs/cgroup:/sys/fs/cgroup:ro '
 
 services:
   - docker
