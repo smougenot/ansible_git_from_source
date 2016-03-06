@@ -17,7 +17,7 @@ RUN \
     mkdir -p /home/provisionner/.ssh && \
     chown -R provisionner:provisionner /home/provisionner/.ssh && \
     chmod 700 /home/provisionner/.ssh && \
-    echo "provisionner ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "provisionner ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/provisionner
 
 CMD ["/sbin/init"]
 

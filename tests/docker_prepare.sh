@@ -37,7 +37,7 @@ _success "Docker image ready"
 #
 _info "Running container"
 docker rm -f ansible_test
-docker run --detach --name ansible_test -P ${distro}-${version}:ansible_test /sbin/init
+docker run --detach --name ansible_test -P ${extra_args} ${distro}-${version}:ansible_test
 checkForError "Starting container failed"
 _success "Docker image ready"
 docker ps -a
